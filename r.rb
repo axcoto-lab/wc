@@ -16,7 +16,7 @@ class Analyzer
     end
 
     words = words.sort_by { |k, v| v }.reverse
-    pp words[0..9]
+    words[0..9]
   end
 
   def self.two_words_count(filename)
@@ -36,7 +36,6 @@ class Analyzer
   end
 
   def self.setence_start_with(prefix, word_count = 10)
-
     if prefix.count(' ') == 0
       stop_word = prefix
     else
@@ -51,14 +50,16 @@ class Analyzer
     loop do
       next_pair = candidate_lists.sample
 
-      attempt += 1
-      if attempt >= candidate_lists.length
-        # This strategy doesn't work out, step back
+      # This strategy doesn't work out, step back
+      # We cannot find enough word pair start with end words of previous sentence
+      if (attempt >= candidate_lists.length) || (candidate_lists.length <= 1)
         words = prefix.split(" ")
-        words.pop # step back
+        words.pop #step back
         sentence = words.join(" ")
         return setence_start_with(sentence, word_count)
       end
+      attempt += 1
+
       break if word_start_with?(next_pair.split(" ").last)
     end
 
@@ -93,6 +94,10 @@ puts "Top ten pair of word count"
 pp Analyzer.two_words_count("alice-in-wonderland.txt")[0..10]
 puts "\n\n"
 
-puts "Random sentency with 10 words"
+puts "Random sentency with 10 words with said"
 pp Analyzer.setence_start_with("said", 10)
+puts "\n\n"
+
+puts "Random sentency with 10 words start with the"
+pp Analyzer.setence_start_with("the", 10)
 puts "\n\n"
