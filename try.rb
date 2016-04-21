@@ -14,17 +14,31 @@ class Analyzer
         end
       end
       puts "Longest word is: #{word}"
+    end
 
+    def map_reduce_longest
+      20.times do |position|
+        character_in_word = Hash.new(0)
+        File.open(FILENAME).each do |line|
+          if words = line.strip.split(/[\s\t-_]+/)
+            words.each do |w|
+              c = w[position]
+              next if c.nil?
+              character_in_word[c] += 1
+            end
+          end
+        end
+        pp character_in_word.sort_by { |k,v| v }.reverse.slice(0..5)
+      end
     end
 
     def count_word
-      wc = {}
+      wc = Hash.new(0)
       File.open(FILENAME).each do |line|
         if tokens = line.strip.split(/[\s\t]+/)
           tokens.each do |w|
             w.downcase!
             next if ['', ' ', "\t"].include?(w)
-            wc[w] = 0 if wc[w].nil?
             wc[w] += 1
           end
         end
@@ -37,7 +51,7 @@ class Analyzer
     end
 
     def count_char
-      wc = {}
+      wc = Hash.new(0)
       File.open(FILENAME).each do |line|
         if tokens = line.strip.split('')
           tokens.each do |c|
@@ -63,3 +77,4 @@ end
 Analyzer.count_char
 Analyzer.count_word
 Analyzer.longest
+Analyzer.map_reduce_longest
